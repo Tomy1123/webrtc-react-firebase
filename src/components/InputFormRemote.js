@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide() {
+export default function SignInSide({ remotePeerName, setRemotePeerName }) {
   const label = "相手の名前"
   const classes = useStyles();
 

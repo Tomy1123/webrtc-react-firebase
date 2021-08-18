@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 /* import Avatar from '@material-ui/core/Avatar'; */
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 /* import LockOutlinedIcon from '@material-ui/icons/LockOutlined'; */
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import App from './App';
 
 function Copyright() {
   return (
@@ -57,9 +58,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide() {
+export default function SignInSide({ localPeerName, setLocalPeerName }) {
   const label = "あなたの名前"
-  const classes = useStyles();
+  const classes = useStyles(); 
+  const [disabled, setDisabled] = useState(true); /* ボタンの状態 */
+  const [name, setName] = useState(''); /* 名前 */
+  const [isComposed, setIsComposed] =useState(false) /* 日本語の変換中かどうか */
+
+  /* 名前の変化を監視しボタンが押せる状態かどうかを決める */
+  useEffect(() => {
+    const disabled = name === '';
+    setDisabled(disabled);
+  }, [name]);
+
+  /* App.jsで管理している名前の初期化 */
+  const initiakizeLocalPeer = useCallback((e) => {
+    setLocalPeerName(name);
+    e.preventDefault();
+  }, [name, setLocalPeerName]);
+
+  /* App.jsから渡ってきな名前が空じゃない時だけreturn */
+  if (localPeerName !== '') return <></>;
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -78,10 +97,21 @@ export default function SignInSide() {
               fullWidth
               label={label}
               name="name"
+              onChange={(e) => setName(e.target.value)}
+              onCompositionEnd={() => setIsComposed(false)}
+              onCompositionStart={() => setIsComposed(true)}
+              onKeyDown={(e) => {
+                if (isComposed) return;
+                if (e.target.value === '') return;
+                if (e.key === "Enter") initiakizeLocalPeer(e)
+              }}
+              value={name}
               autoFocus
             />
             <Button
               type="submit"
+              disabled={disabled}
+              onClick={(e) => initiakizeLocalPeer(e)}
               fullWidth
               variant="contained"
               color="primary"
@@ -96,6 +126,6 @@ export default function SignInSide() {
         </div>
       </Grid>
     </Grid>
-    
+
   );
 }
