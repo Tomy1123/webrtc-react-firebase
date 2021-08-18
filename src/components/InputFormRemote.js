@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide({ localPeerName, remotePeerName, setRemotePeerName }) {
+export default function SignInSide({ rtcClient }) {
   const label = "相手の名前"
   const classes = useStyles();
   const [disabled, setDisabled] = useState(true); /* ボタンの状態 */
@@ -72,12 +72,12 @@ export default function SignInSide({ localPeerName, remotePeerName, setRemotePee
 
   /* App.jsで管理している名前の初期化 */
   const initiakizeRemotePeer = useCallback((e) => {
-    setRemotePeerName(name);
+    rtcClient.remotePeerName = name;
     e.preventDefault();
-  }, [name, setRemotePeerName]);
+  }, [name, rtcClient]);
 
-  if (localPeerName === '') return <></>;
-  if (remotePeerName !== '') return <></>;
+  if (rtcClient.localPeerName === '') return <></>;
+  if (rtcClient.remotePeerName !== '') return <></>;
 
   return (
     <Grid container component="main" className={classes.root}>
