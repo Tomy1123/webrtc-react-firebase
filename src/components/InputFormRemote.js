@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 /* import Avatar from '@material-ui/core/Avatar'; */
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -57,9 +57,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide() {
+export default function SignInSide({ localPeerName, remotePeerName, setRemotePeerName }) {
   const label = "相手の名前"
   const classes = useStyles();
+  const [disabled, setDisabled] = useState(true); /* ボタンの状態 */
+  const [name, setName] = useState(''); /* 名前 */
+  const [isComposed, setIsComposed] =useState(false) /* 日本語の変換中かどうか */
+
+  /* 名前の変化を監視しボタンが押せる状態かどうかを決める */
+  useEffect(() => {
+    const disabled = name === '';
+    setDisabled(disabled);
+  }, [name]);
+
+  /* App.jsで管理している名前の初期化 */
+  const initiakizeRemotePeer = useCallback((e) => {
+    setRemotePeerName(name);
+    e.preventDefault();
+  }, [name, setRemotePeerName]);
+
+  if (localPeerName === '') return <></>;
+  if (remotePeerName !== '') return <></>;
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -78,12 +96,23 @@ export default function SignInSide() {
               fullWidth
               label={label}
               name="name"
+              onChange={(e) => setName(e.target.value)}
+              onCompositionEnd={() => setIsComposed(false)}
+              onCompositionStart={() => setIsComposed(true)}
+              onKeyDown={(e) => {
+                if (isComposed) return;
+                if (e.target.value === '') return;
+                if (e.key === "Enter") initiakizeRemotePeer(e)
+              }}
+              value={name}
               autoFocus
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
+              disabled={disabled}
+              onClick={(e) => initiakizeRemotePeer(e)}
               color="primary"
               className={classes.submit}
             >
