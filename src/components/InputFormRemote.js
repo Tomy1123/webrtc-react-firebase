@@ -60,6 +60,8 @@ const useStyles = makeStyles((theme) => ({
 export default function SignInSide() {
   const classes = useStyles();
 
+  if (true) return <></>;
+
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
