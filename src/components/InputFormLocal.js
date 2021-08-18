@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide({ localPeerName, setLocalPeerName }) {
+export default function SignInSide({ rtcClient }) {
   const label = "あなたの名前"
   const classes = useStyles(); 
   const [disabled, setDisabled] = useState(true); /* ボタンの状態 */
@@ -72,12 +72,12 @@ export default function SignInSide({ localPeerName, setLocalPeerName }) {
 
   /* App.jsで管理している名前の初期化 */
   const initiakizeLocalPeer = useCallback((e) => {
-    setLocalPeerName(name);
+    rtcClient.localPeerName = name;
     e.preventDefault();
-  }, [name, setLocalPeerName]);
+  }, [name, rtcClient]);
 
   /* App.jsから渡ってきな名前が空じゃない時だけreturn */
-  if (localPeerName !== '') return <></>;
+  if (rtcClient.localPeerName !== '') return <></>;
 
   return (
     <Grid container component="main" className={classes.root}>
