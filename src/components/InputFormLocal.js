@@ -60,17 +60,17 @@ const useStyles = makeStyles((theme) => ({
 export default function SignInSide({ rtcClient }) {
   const label = "あなたの名前"
   const classes = useStyles(); 
-  const [disabled, setDisabled] = useState(true); /* ボタンの状態 */
-  const [name, setName] = useState(''); /* 名前 */
-  const [isComposed, setIsComposed] =useState(false) /* 日本語の変換中かどうか */
+  const [disabled, setDisabled] = useState(true);
+  const [name, setName] = useState('');
+  const [isComposed, setIsComposed] =useState(false);
 
-  /* 名前の変化を監視しボタンが押せる状態かどうかを決める */
+  
   useEffect(() => {
     const disabled = name === '';
     setDisabled(disabled);
   }, [name]);
 
-  /* App.jsで管理している名前の初期化 */
+  
   const initiakizeLocalPeer = useCallback(
     (e) => {
       rtcClient.localPeerName = name;
@@ -80,7 +80,7 @@ export default function SignInSide({ rtcClient }) {
     [name, rtcClient]
   );
 
-  /* App.jsから渡ってきな名前が空じゃない時だけreturn */
+  
   if (rtcClient.localPeerName !== '') return <></>;
 
   return (
