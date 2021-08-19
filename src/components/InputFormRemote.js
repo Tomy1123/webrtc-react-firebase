@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide({ rtcClient, setRtcClient }) {
+export default function SignInSide({ rtcClient }) {
   const label = "相手の名前"
   const classes = useStyles();
   const [disabled, setDisabled] = useState(true); /* ボタンの状態 */
@@ -71,11 +71,14 @@ export default function SignInSide({ rtcClient, setRtcClient }) {
   }, [name]);
 
   /* App.jsで管理している名前の初期化 */
-  const initiakizeRemotePeer = useCallback((e) => {
-    rtcClient.remotePeerName = name;
-    setRtcClient(rtcClient);
-    e.preventDefault();
-  }, [name, setRtcClient, rtcClient]);
+  const initiakizeRemotePeer = useCallback(
+    (e) => {
+      rtcClient.remotePeerName = name;
+      rtcClient.setRtcClient();
+      e.preventDefault();
+    }, 
+    [name, rtcClient]
+  );
 
   if (rtcClient.localPeerName === '') return <></>;
   if (rtcClient.remotePeerName !== '') return <></>;
